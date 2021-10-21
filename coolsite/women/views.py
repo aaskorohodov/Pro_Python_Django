@@ -1,8 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from .models import *
+
+menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
+
 
 def index(request):
-    return HttpResponse('Страница приложения women')
+    posts = Women.objects.all()  # берем все записи модели, ниже передаем их в шаблон
+    return render(request, 'women/index.html', {'posts': posts, 'menu': menu, 'title': 'Главная страница'})
+
+
+def about(request):
+    return render(request, 'women/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
 def categories(request, catid):  # catid рандомное имя, отлавливается в urls.py
