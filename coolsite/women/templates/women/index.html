@@ -1,13 +1,9 @@
 {% extends 'women/base.html' %}
+{% load women_tags %}
 
 {% block content %}
-<ul class="list-articles">
-	{% for p in posts %}
-			<li><h2>{{p.title}}</h2>
-	{{p.content|linebreaks|truncatewords:50}}
-			<div class="clear"></div>
-			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p>
-			</li>
-	{% endfor %}
-</ul>
+
+<!-- зовет пользовательский тег, передает ему текущую категорию -->
+{% show_all_posts cat_selected%}
+
 {% endblock %}

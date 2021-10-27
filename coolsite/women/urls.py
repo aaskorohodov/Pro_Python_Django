@@ -4,12 +4,11 @@ from .views import *  # из текущего пакета (women) импорт�
 urlpatterns = [
     path('', index, name='home'),  # ловим пустой url, вызываем функцию index из отображения.
                                    # name = придуманное имя, по которому можно звать этот путь. Например при редирект
-
-    path('cats/<int:catid>/', categories),  # отлавливаем любое число, пакуем в переменную catid, передаем в views
     re_path(r'^archive/(?P<year>[0-9]{4})/', archive),  # re_path умеет работать с регулярными выражениями
     path('about/', about, name='about'),
     path('addpage/', addpage, name='add_page'),
     path('contact/', contact, name='contact'),
     path('login/', login, name='login'),
     path('post/<int:post_id>/', show_post, name='post'),
+    path('category/<int:cat_id>/', show_category, name='category')  # отлавливаем любое число, пакуем в переменную cat_id, передаем в views
 ]

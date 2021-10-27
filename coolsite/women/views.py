@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render
 from .models import *
 
@@ -10,16 +10,20 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
 
 
 def index(request):
-    posts = Women.objects.all()  # берем все записи модели, ниже передаем их в шаблон
+    # posts = Women.objects.all()  # берем все записи модели, ниже передаем их в шаблон
+    # cats = Category.objects.all()  # и эти записи тоже берем. В шаблон передаем словарем ниже. Более не требуется
 
     '''Это словарь, чтобы передавать параметры в шаблоны. Можно прописать параметры ниже в рендер, но так красивше.
     Ниже нужно передать этот словарь context в специальную переменную context (словарь можно назвать иначе,
     а переменная именно context'''
     context = {
-        'posts': posts,
+        # 'posts': posts,
+        # 'cats': cats, более не требуется, работает на пользовательском теге
         'menu': menu,
-        'title': 'Главная страница'
-    }
+        'title': 'Главная страница',
+        'cat_selected': 0,
+    }  # cat_selected, чтобы на главной отображалась одна из записей как строка, а не как ссылка. В шаблоне есть if,
+       # он реагирует на cat_selected
     return render(request, 'women/index.html', context=context)
 
 
@@ -51,3 +55,22 @@ def login(request):
 
 def show_post(request, post_id):
     return HttpResponse(f"Отображение статьи с id = {post_id}")
+
+
+def pageNotFound(request, exeption):
+    return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+
+
+def show_category(request, cat_id):
+    posts = Women.objects.filter(cat_id=cat_id)  # нужно только чтобы поднять 404
+
+    if len(posts) == 0:
+        raise Http404()
+
+    context = {
+        'menu': menu,
+        'title': 'Рубрики',
+        'cat_selected': cat_id,
+    }
+
+    return render(request, 'women/index.html', context=context)
