@@ -26,9 +26,12 @@ def show_all_posts(cat_selected):
 
     if cat_selected != 0:  # сценарий для категорий (что-либо выбрано
         posts = Women.objects.filter(cat_id=cat_selected)
+        # test = Women.objects.get(id=5).time_create
+        # print(test)
 
         '''cat_id = название в базе, cat_selected = переменная'''
 
     else:  # сценарий главной страницы (ничего не выбрано)
         posts = Women.objects.all()
+
     return {'posts': posts}
