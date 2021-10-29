@@ -45,13 +45,13 @@ def archive(request, year):  # year отлавливается в urls.py
 
 def addpage(request):
     if request.method == 'POST':  # если request стал POST (форма была отправлена)
-        form = AddPostForm(request.POST)  # формируем форму на основе словаря POST, где лежат заполненные данные
+        form = AddPostForm(request.POST, request.FILES)  # формируем форму на основе словаря POST, где лежат заполненные данные
+        # и передает файл (request.FILE), это для отправки фото
+
         if form.is_valid():  # если все норм, то написать очищенные данные в консоли
-            try:
-                Women.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except:
-                form.add_error(None, 'Ошибка добавления поста')
+            form.save()  # сохранение для формы, связанной с моделью
+            return redirect('home')
+
     else:
         form = AddPostForm()
     return render(request, 'women/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление статьи'})
