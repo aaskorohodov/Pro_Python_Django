@@ -56,7 +56,7 @@ def about(request):
 
 
 def categories(request, catid):  # catid рандомное имя, отлавливается в urls.py
-    if request.GET:  # если он есть, то распечатать
+    if request.GET:  # если он есть, то распечатать. request.GET это коллекция http запросов (?name=asd&title=...)
         print(request.GET)
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>{catid}</p>")
 
