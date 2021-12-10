@@ -10,7 +10,8 @@ class WomenAdmin(admin.ModelAdmin):
     search_fields = появится строка поиска, станет можно искать по указанным тут полям
     list_editable = что можно редактировать прямо из общего списка
     list_filter = добавит справа панель фильтрации, в которой будут указанные тут поля
-    prepopulated_fields = автоматическое заполнение поля слагом, сгенерированным из title
+    prepopulated_fields = автоматическое заполнение поля (слагом), сгенерированным из title
+    *буквально одно поле будет заполняться автоматом, когда админ заполняет другое поле
     '''
     list_display = ('id', 'title', 'time_create', 'photo', 'is_published')
     list_display_links = ('id', 'title')

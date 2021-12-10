@@ -10,6 +10,10 @@ def get_categories():  # имя функции произвольное
     return Category.objects.all()
 
 
+'''Этот тег (ниже) сначала рисует свой кусок html, по своему шаблону, а затем отдает его в другой шаблон (base.html).
+return снизу передает словарь в list_categories.html, там оно обрабатывается (рисуется сайтбар, вроде бы), а затем
+в базовый шаблон тянется уже готовый кусок страницы.'''
+
 @register.inclusion_tag('women/list_categories.html')
 def show_categories(sort=None, cat_selected=0):  # любое имя + (передаем параметры из шаблона, куда этот тег встанет)
     if not sort:
@@ -24,7 +28,7 @@ def show_categories(sort=None, cat_selected=0):  # любое имя + (пере
 def show_all_posts(cat_selected):
     '''Рисует все посты для разных категорий или для главной страницы'''
 
-    if cat_selected != 0:  # сценарий для категорий (что-либо выбрано
+    if cat_selected != 0:  # сценарий для категорий (что-либо выбрано)
         posts = Women.objects.filter(cat_id=cat_selected)
         # test = Women.objects.get(id=5).time_create
         # print(test)

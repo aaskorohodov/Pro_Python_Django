@@ -43,8 +43,24 @@
                    <li><a href="{% url 'home' %}">Все категории</a></li>
 {% endif %}
 
-		<!-- Пользовательский тег, рисует категории слева -->
-{% show_categories '-name' cat_selected %}
+
+		<!-- перечисляем категории -->
+		{% for c in cats %}
+		<!-- считаем записи в каждой категории, если есть хоть 1, то делаем блок ниже, либо пропускаем его. Нужно, чтобы
+		 не выводить пустые категории, в которых нет записей. Возможно, благодаря annotate + Count при чтении из БД -->
+		{% if c.women__count > 0 %}
+
+			{% if c.pk == cat_selected %}
+				<li class="selected">{{c.name}}</li>
+
+			{% else %}
+				<li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
+
+			{% endif %}
+
+		{% endif %}
+		{% endfor %}
+
 
 		<li class="share">
 		<p>Наш канал</p>

@@ -6,20 +6,26 @@ from .models import *
 
 class AddPostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        '''Переписываем значение пустого поля для выпадающего списка'''
+        '''Переписываем значение пустого поля для выпадающего списка (выбор категорий). По умолчанию там черточки,
+        пока мы что-то не выберем, хотим, чтобы там был какой-то текст. Для этого переписывает init базового класса.
+        Там есть словарь, в нем есть ключ cat, который взят из модели Women, и указывает на категорию (певицы, актрисы).
+        У этого ключа есть свойство empty_label, его и переписываем на что захотим.'''
         super().__init__(*args, **kwargs)
         self.fields['cat'].empty_label = "Категория не выбрана"
 
     class Meta:
         model = Women  # указывает, с какой моделью установить связь
-        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat']
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat'] # какие поля брать (из модели Women)
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-input'}),
             'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
         }
+        '''widgets = указывает свой стиль для полей ввода. Title получает TextInput, content получает размер (колонки
+        и ряда)'''
 
     def clean_title(self):
-        '''Валидатор, проверяет длину поля'''
+        '''Валидатор, проверяет длину поля. Обязательно начинается с clean_, затем идет имя проверяемого поля.
+        Обращаемся к текущей форме (self.), в ней смотрим на cleaned_data по ключу title.'''
 
         title = self.cleaned_data['title']  # обращаемся к словарю, берем тайтл
         if len(title) > 200:
