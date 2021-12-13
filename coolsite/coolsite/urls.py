@@ -18,3 +18,10 @@ if settings.DEBUG:  # в режиме отладки, когда DEBUG == True, 
     settings.MEDIA_URL = переменная MEDIA_URL из settings.py, в ней указан /media/ и все
     document_root также указывает на файл settings, там переменная, которая готовит путь до файла на сервере
     '''
+
+    import debug_toolbar
+    urlpatterns = [
+                      path('__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns
+
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

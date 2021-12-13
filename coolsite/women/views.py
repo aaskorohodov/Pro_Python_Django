@@ -1,3 +1,5 @@
+from django.contrib.auth import logout, login
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -41,8 +43,17 @@ class WomenHome(DataMixin, ListView):
     def get_queryset(self):
         '''Добывает из модели только те данные, которые отмечены как опубликованные. Чтобы отображать только их, а те,
         у которых стоит метка "не опубликовано", не выводить. get_queryset = специальное имя функции, для такой задачи
-        именно его и надо определять.'''
-        return Women.objects.filter(is_published=True)
+        именно его и надо определять.
+
+        *сам по себе get_queryset определяет любое правило, которым мы хотим читать модель. Как шаблонный фильтр.'''
+
+        '''.select_related('cat') делает жадную загрузку. Без него, при отрисовке записей (посты в списке постов),
+        на каждую запись делается свой запрос. Запрос делает шаблон, чтобы показать категорию (актрисы/певицы).
+        Следовательно, сколько записей на странице, столько и запросов к БД.
+        select_related делает 1 запрос на все нужное, оптимизация. Запрос становится жадным, он делается не столько
+        раз, сколько раз его делает шаблон в своем цикле for, а 1 раз.'''
+
+        return Women.objects.filter(is_published=True).select_related('cat')
 
 
 # def index_not_used_any_more(request):
@@ -116,8 +127,8 @@ def contact(request):
     return HttpResponse("Обратная связь")
 
 
-def login(request):
-    return HttpResponse("Авторизация")
+# def login(request):
+#     return HttpResponse("Авторизация")
 
 
 class ShowPost(DataMixin, DetailView):
@@ -211,3 +222,42 @@ class WomenCategory(DataMixin, ListView):
 #     }
 #
 #     return render(request, 'women/index.html', context=context)
+
+
+class RegisterUser(DataMixin, CreateView):
+    '''Регистрация нового пользователя'''
+    form_class = RegisterUserForm  # связанный класс формы
+    template_name = 'women/register.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Регистрация")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def form_valid(self, form):
+        '''Вызывается, в случае успешной регистрации. Делает автоматическую авторизацию свежим пользователем.'''
+        user = form.save()
+        login(self.request, user)
+        return redirect('home')
+
+
+class LoginUser(DataMixin, LoginView):
+    '''Авторизация пользователя'''
+    form_class = LoginUserForm  # связанный класс формы
+    template_name = 'women/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Авторизация")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        '''Куда отправиться, в случае успеха'''
+        return reverse_lazy('home')
+
+
+def logout_user(request):
+    '''Функция, которую вызывает кнопка Выйти. Делает logout и редирект.'''
+    logout(request)
+    return redirect('login')

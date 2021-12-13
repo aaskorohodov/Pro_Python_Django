@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',  # Для debug toolbar
     'women.apps.WomenConfig'
 ]
 
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  # Для debug toolbar
 ]
 
 ROOT_URLCONF = 'coolsite.urls'
@@ -137,3 +139,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 папка ПРОЕКТА, и к ней приклеивается /media
 '''
 MEDIA_URL = '/media/'  # добавляет к урлам файлов префикс media
+
+'''Для debug toolbar'''
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
