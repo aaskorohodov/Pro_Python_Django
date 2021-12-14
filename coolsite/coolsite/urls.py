@@ -8,6 +8,7 @@ from women.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('captcha/', include('captcha.urls')),
     path('', include('women.urls'))  # include включает все маршруты из указанного каталога и файла (women.urls)
     # то есть все после домена (''), будет браться из urls.py конкретного приложения
 ]
